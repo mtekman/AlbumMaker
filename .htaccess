@@ -1,0 +1,4 @@
+<Files "startpipeline.php">
+    php_value output_buffering Off
+    php_value implicit_flush On
+</Files>

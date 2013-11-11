@@ -1,0 +1,187 @@
+<html lang="en-GB">
+<head>
+<style>
+table th {
+	background:#99aa99;
+}
+table td {
+	background:#777799;
+	color:#eeeeee;
+}
+
+input {
+	border-radius: 12px;
+}
+textarea {
+	border-radius: 12px;
+}
+#leftside {
+	float:left;
+	z-index:1;
+}
+#rightside {
+	float:right;
+	z-index:5;
+}
+
+</style>
+
+<script language="JavaScript" type="text/javascript" src="js/tablednd.js"></script>
+<script language="JavaScript">
+var table=null
+var tableDnD=null
+
+function createGuid(){
+    return 'xxxxxxxx'.replace(/x/g, function(c) {
+        var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
+        return v.toString(16);
+    });
+}
+
+function removeRow(guid){
+	var index=0;
+	for (var i=1, row;row = table.rows[i];i++) {
+		var r_guid = row.cells[4].innerHTML
+		if (guid == r_guid){
+			index = i;
+			table.deleteRow(index);
+			resortNumbs()
+			return 1;
+		}
+	}
+	return -1
+}
+
+function addFileElem(text){
+	var uuid = createGuid()
+	
+	var row = table.insertRow(-1); //last
+	var elem0 = row.insertCell(0)
+	var elem1 = row.insertCell(1);
+	var elem2 = row.insertCell(2);
+	var elem3 = row.insertCell(3);
+	var elem4 = row.insertCell(4); //uuid, hidden
+	
+	elem0.innerHTML = "x"
+	elem0.style.textAlign = "center"
+	elem1.innerHTML = '<input type="text" name="author" style="width:100px;text-align:center;" >'
+	elem2.innerHTML = text
+	elem3.innerHTML = '<input type="button" value="x" style="width:25px;height:25px" onclick=\'removeRow("'+uuid+'")\' >'
+	elem4.innerHTML = uuid
+	elem4.style.display = "none"
+}
+
+function handleFileSelect(e) {
+	if(!e.target.files) return;
+	var files = e.target.files;
+	
+//	for (t in table.rows.length) table.deleteRow()    	//Clear Table
+	//Rebuild
+	for(var i=0; i<files.length; i++){
+		addFileElem( files[i].name );
+	}
+	resortNumbs()
+	tableDnD.init(table);
+}
+
+function resortNumbs(){
+	for (var i=1, row;row = table.rows[i];i++) {
+		var pad = "00";
+		var res = (pad+i).slice(-pad.length);
+		row.cells[0].innerHTML = res
+	}
+}
+
+function sendData(){
+	var empty = "NAME?"
+	var num_empties = 0
+
+	//Check empty names
+	for (var i=1, row;row = table.rows[i]; i++) {
+		var box = row.cells[1].getElementsByTagName("input")[0]
+		var auth = box.value.trim()
+		if (auth == "" || auth == empty || auth.length == 0){
+			box.value = "NAME?"
+			num_empties +=1;
+		}
+	}
+	if (num_empties!=0 ) return false
+	if (table.rows.length <= 1) return false
+
+	//return true
+	document.getElementById('json_name').value = writeList();
+	return true
+}
+
+function inputValue(idval){
+	return document.getElementById(idval).value
+}
+
+function writeList(){
+	str='Name: ' + inputValue('album_name')+
+		'\n#'+'\n#'+
+		'\nTheme: '+ inputValue('theme_name')+
+		'\nAuthor: '+ inputValue('author_name')+
+		'\n#'+'\n#';
+		
+	for (var i=1, row;row = table.rows[i]; i++) {
+		cel_vars = row.cells;
+		str += '\n'+cel_vars[1].getElementsByTagName('input')[0].value+'\t'+
+			   cel_vars[0].innerHTML + '\t' +
+			   cel_vars[2].innerHTML;
+	}
+	str+='\n'
+	return str
+}
+
+window.onload = function() {
+	table = document.getElementById('songlist');
+	tableDnD = new TableDnD();
+	
+	//Make headers non droppable
+	var header_row = table.rows[0];
+	header_row.setAttribute("NoDrag",true)
+	header_row.setAttribute("NoDrop",true)
+	
+	//Override drop method to calculate number indexes
+	tableDnD.onDrop = function (){	resortNumbs(); }
+	
+}
+
+function init() {
+	document.querySelector('#songs').addEventListener('change', handleFileSelect, false);
+}
+
+document.addEventListener("DOMContentLoaded", init, false);
+
+</script>
+</head>
+<body>
+
+<div id="leftside">
+<!--	<form id="myForm" method="GET" enctype="multipart/form-data" onsubmit="return sendData();" action="startpipeline.php" > -->
+	<form id="myForm" method="post" enctype="multipart/form-data" onsubmit="return sendData();" action="startpipeline.php" >
+	<table>
+		<tr>	<th colspan=2> Alist Music Club Maker </th> 													</tr>
+		<tr>	<td>Album: </td> 	<td><input type="text" id="album_name" name="album_name" value="Music Club Week NN"></td>	</tr>
+		<tr>	<td>Theme: </td> 	<td><textarea id="theme_name" name="theme_name" rows="3" cols="30">e.g. Something</textarea> </td>	</tr>
+		<tr style="display:none;" >	<td>JSON: </td> 	<td><textarea id="json_name" name="json_name" >populated by writeList()</textarea> </td>	</tr>
+		<tr>	<td>Author:</td> 	<td><input type="text" width="50px" id="author_name" name="author_name" value="tetris"></td>	</tr>
+		<tr>	<td>AlbumArt:</td> 	<td><input type="file" name="AA"></td>										</tr>
+		<tr>	<td>Files: </td>	<td><input type="file" id="songs" name="songs[]" multiple="true" ></td>				</tr>
+		<tr>	<td colspan=2><input type="submit" value="Process Songs" ></td>									</tr>
+	</table>	
+	</form>
+</div>
+
+<div id="rightside">
+	<table id="songlist">
+		<tr>
+			<th>#</th><th>Author</th><th>Filename</th><th>Del?</th>
+		</tr>
+		<!-- Dynamic Content -->
+	</table>
+</div>
+
+</body>
+</html>
