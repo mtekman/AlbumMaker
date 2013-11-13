@@ -64,40 +64,38 @@ while read line; do
 	obs_file=$obs_fold/"Song $number".mp3
 	cp $active_file $obs_file
 
+	extra="--comment=eng:Detail:$theme_author -- $theme";
+	imgur=""
+	[ -f $mp3fold/AA.jpg ] && imgur="--add-image=$mp3fold/AA.jpg:OTHER"
+
 	#Add meta to real file
 	eyeD3 \
          -t "$track" -a "$artist" -n $number\
-	 -A "$week_name [$author]"\
-	 --comment=eng:"$theme_author":"$theme"\
-	 --add-image $mp3fold/AA.jpg:OTHER\
+	 -A "$week_name [$author]" $extra $imgur\
 	$active_file 1>&2
 	echo -en " REAL "
 	
 	# Add meta to obfuscated file
 	eyeD3 \
-	 -A "$week_name"\
-	 --comment=eng:"$theme_author":"$theme"\
-	 --add-image $mp3fold/AA.jpg:OTHER\
+	 -A "$week_name" -n $number $extra $imgur\
 	$obs_file 1>&2
 	echo -en " CYPHER\n"
 
 done < $listfile
 
-chmod a+wrx $mp3fold 1>&2
-chmod a+wrx $obs_fold 1>&2
-
 echo -e "\nMaking Real Zips"
 z_dec="`echo $week_name\"_DECYPHERED\" | sed 's/\ /\_/g'`.zip"
-zip -j $z_dec $mp3fold/*.mp3
+zip -j $z_dec `find $mp3fold ! -name List.txt -type f`
 mv $z_dec $out_fold/ 2>&1
 
 echo -e "\nMaking Cypher Zips"
 z_dec2="`echo $week_name | sed 's/\ /\_/g'`.zip"
-zip -j $z_dec2 $obs_fold/*.mp3
+zip -j $z_dec2 `find $obs_fold ! -name List.txt -type f`
 mv $z_dec2 $out_fold/ 2>&1
 
-chmod a+wrx $out_fold/*.zip
+cp $listfile $out_fold/"songlist.txt";
+
 [[ "$obs_fold" =~ "obf" ]] && rm -rf $obs_fold
-[[ "$mp3fold" =~ "upload" ]] && rm $mp3fold/*
+[[ "$mp3fold" =~ "toProc" ]] && rm $mp3fold/*
 
 echo -e "\n~~~~~~~~~~~~~~~~[FINIT]~~~~~~~~~~~~~~~~"
