@@ -30,7 +30,7 @@ function addYoutube(){
 	var yt_name = yt_n.value;
 	
 	if (!yt_name.contains(".mp3")){
-		yt_name.append(".mp3")
+		yt_name += ".mp3"
 	}
 	addFileElem(yt_name,true,yt_link);
 	yt_l.value = "<youtube.com>"
