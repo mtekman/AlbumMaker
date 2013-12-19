@@ -16,7 +16,7 @@ obs_fold="obfuscated"
 mkdir -p $obs_fold
 mkdir -p $out_fold
 
-[[ "$out_fold" =~ "out" ]] && rm $out_fold/*
+#[[ "$out_fold" =~ "out" ]] && rm $out_fold/*
 
 dos2unix $listfile 1>&2
 
