@@ -59,14 +59,17 @@ while read line; do
 	
 	echo "        ---> Youtube";
 	youtube-dl "$link" -c -q --extract-audio --audio-format=aac -o $tmpname".flv"
-	#outputs "tmp.aac"
+	#outputs: "$tmpname.aac"
 	
 	if ! [[ "$ext" =~ "aac" ]];then
 		#convert using mencoder, more stable seek opts than ffmpeg (though I love ffmpeg :(   )
 		#mencoder -ovc frameno -oac mp3lame -lameopts cbr:br=256 -of rawaudio -o download.mp3 -audiofile download.aac download.flv
 		
 		echo "            ---> to $ext";
-		avconv -i $tmpname".aac" -v quiet -q:a 0 "$newname";
+		#avconv -i $tmpname".aac" -v quiet -q:a 0 "$newname";   # Seeking issue persists, likelt libav-extras at fault.
+		# Using Lame pipe
+		ffmpeg -v quiet -i $tmpname".aac" -f wav - | lame -V 3 - "$newname"
+		
 	else
 		if [ -f $tmpname".aac" ];then
 			mv $tmpname".aac" $newname
