@@ -54,9 +54,9 @@ while read line; do
 
 	active_file=$mp3fold/$file
 
-	echo -en $number" "$file": normalizing..."
+	echo -en $number" "$file":\t normalizing..."
 	normalize-audio $active_file 1>&2
-	echo -en "X,    adding tags..."
+	echo -en "X,\t\tadding tags..."
 	
 	#Strip file of all meta
 	eyeD3 --remove-all $active_file 1>&2
@@ -73,19 +73,22 @@ while read line; do
          -t "$track" -a "$artist" -n $number\
 	 -A "$week_name [$author]" $extra $imgur\
 	$active_file 1>&2
-	echo -en " REAL "
+	echo -en "\tREAL "
 	
 	# Add meta to obfuscated file
 	eyeD3 \
 	 -A "$week_name" -n $number $extra $imgur\
 	$obs_file 1>&2
-	echo -en " CYPHER\n"
+	echo -en "\tCYPHER\n"
 
 done < $listfile
 
+songlist=$out_fold/"songlist.txt"
+cp $listfile $songlist
+
 echo -e "\nMaking Real Zips"
 z_dec="`echo $week_name\"_DECYPHERED\" | sed 's/\ /\_/g'`.zip"
-zip -j $z_dec `find $mp3fold ! -name List.txt -type f`
+zip -j $z_dec `find $mp3fold ! -name List.txt -type f` $songlist
 mv $z_dec $out_fold/ 2>&1
 
 echo -e "\nMaking Cypher Zips"
@@ -96,6 +99,6 @@ mv $z_dec2 $out_fold/ 2>&1
 cp $listfile $out_fold/"songlist.txt";
 
 [[ "$obs_fold" =~ "obf" ]] && rm -rf $obs_fold
-[[ "$mp3fold" =~ "toProc" ]] && rm $mp3fold/*
+#[[ "$mp3fold" =~ "toProc" ]] && rm $mp3fold/*
 
 echo -e "\n~~~~~~~~~~~~~~~~[FINIT]~~~~~~~~~~~~~~~~"
