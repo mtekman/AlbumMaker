@@ -61,8 +61,8 @@ foreach($files as $file){ // iterate files
     unlink($file); // delete file
 }
 
-//Move AlbumArt to AA.jpg, if it exists..
-if (strlen(trim($tmp_AA_name))>=1) rename("$tmpuplDir/$tmp_AA_name", "$uploadDir/AA.jpg");
+//Copy AlbumArt to AA.jpg, if it exists..
+if (strlen(trim($tmp_AA_name))>=1) copy("$tmpuplDir/$tmp_AA_name", "$uploadDir/AA.jpg");
 
 //Write List.txt for audio pipeline
 file_put_contents($listfile, $_POST["json_name"]);
