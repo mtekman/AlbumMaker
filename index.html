@@ -9,7 +9,7 @@
 
 <div id="leftside">
 <!--	<form id="myForm" method="GET" enctype="multipart/form-data" onsubmit="return sendData();" action="startpipeline.php" > -->
-	<form id="myForm" method="post" enctype="multipart/form-data" onsubmit="return sendData();" action="assets/php/startpipeline.php" >
+	<form id="myForm" method="post" enctype="multipart/form-data" onsubmit="return sendData();" action="assets/php/startpipeline.php" accept-charset=utf-8 >
 	<table>
 		<tr>	<th colspan=2> Alist Music Club Maker </th> 													</tr>
 		<tr>	<td>Album: </td> 	<td><input type="text" id="album_name" name="album_name" value="Music Club Week NN"></td>	</tr>
@@ -28,9 +28,12 @@
 	</table>
 	<input type="submit" value="Process Songs" >
 	</form>
+
+
 </div>
 
 <div id="rightside">
+	<input type="button" value="Save Table" onclick="printOutTable()" /><br/>
 	<table id="songlist">
 		<tr>
 			<th>#</th><th>Author</th><th>Filename</th><th>Del?</th>
