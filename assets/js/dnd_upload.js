@@ -24,7 +24,8 @@ var holder = document.getElementById('drop_zone'),
       'audio/mp4': true,
       'audio/ogg': true,
       'audio/L24': true,
-      'audio/vnd.wav': true
+      'audio/vnd.wav': true,
+      'text/plain':true
     },
     progress = document.getElementById('uploadprogress'),
     fileupload = document.getElementById('upload');
@@ -48,8 +49,9 @@ function setName(name){
 
 
 function previewfile(file) {
+	
 	if (tests.filereader === true && acceptedTypes[file.type] === true) {
-
+		
 		if (file.type.split('/')[0]=="image"){
 			var reader = new FileReader();
 			reader.onload = function (event) {
@@ -64,6 +66,10 @@ function previewfile(file) {
 			reader.readAsDataURL(file);
 			return "Image"
 		}
+		else if (file.type.split('/')[0]=="text"){
+			//Text file of table likely
+			return "Text";
+		}			
 		else{
 			return "Audio";
 			//display audio
@@ -102,6 +108,7 @@ function readfiles(files) {
 
 		  xhr.send(formData);
 		  if (result=="Audio") addFileElem(files[i].name);
+		  else if (result=="Text") rewriteTable(files[i]);
 	  }
       resortNumbs()
       tableDnD.init(table);

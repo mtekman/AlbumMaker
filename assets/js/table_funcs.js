@@ -30,14 +30,59 @@ function addYoutube(){
 	var yt_name = yt_n.value;
 	
 	if (!yt_name.contains(".mp3")){
-		yt_name.append(".mp3")
+		yt_name +=".mp3"
 	}
 	addFileElem(yt_name,true,yt_link);
 	yt_l.value = "<youtube.com>"
 	yt_n.value = "<filename.mp3>"
 }
 
-function addFileElem(text,resort=false, link=""){
+
+function printOutTable(){
+	//Print <Author>\t<Filename>\t<youtube>
+	var text=""
+	
+	for (var i=1, row;row = table.rows[i];i++) {
+		var cells = row.cells;
+		var author = cells[1].getElementsByTagName('input')[0].value;
+		var filename = cells[2].innerHTML;
+		var ytube= cells[5].innerHTML;
+		
+		text += author+"\t"+filename+"\t"+ytube+'\n'
+	}
+	alert(text);
+}
+
+
+function rewriteTable(file){
+	if (file) {
+		var r = new FileReader();
+		r.onload = function(e) {
+			var contents = e.target.result;
+			//alert(contents);
+			var lines = contents.split('\n')
+			for (var l=0; l < lines.length; l++){
+				//Author  Filename Youtbue
+				var tokes = lines[l].split('\t');
+				if (tokes.length<2) continue
+				
+				tokes[1] = tokes[1].trim()				
+				if(tokes[1].length==0) tokes[1]=" "
+				
+				addFileElem(tokes[1],true, tokes[2].trim(),tokes[0].trim())
+			}
+			tableDnD = new TableDnD();
+
+			
+		}
+		r.readAsText(file);
+    } else { 
+		alert("Failed to load file");
+    }	
+}
+
+
+function addFileElem(text,resort=false, link="",author=""){
 	
 	if (text.contains("'")){
 		alert('"'+text+'"'+"\n\nPlease no apostrophes in file names!")
@@ -56,7 +101,7 @@ function addFileElem(text,resort=false, link=""){
 	
 	elem0.innerHTML = "x"
 	elem0.style.textAlign = "center"
-	elem1.innerHTML = '<input type="text" name="author" style="width:100px;text-align:center;" >'
+	elem1.innerHTML = '<input type="text" name="author" style="width:100px;text-align:center;" value="'+author+'">'
 	elem2.innerHTML = text
 	elem3.innerHTML = '<input type="button" value="x" style="width:25px;height:25px" onclick=\'removeRow("'+uuid+'")\' >'
 	elem4.innerHTML = uuid
@@ -125,6 +170,7 @@ function writeList(){
 			   cel_vars[2].innerHTML;											//filename
 	}
 	str+='\n'
+	alert(str)
 	return str
 }
 
