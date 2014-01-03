@@ -1,0 +1,35 @@
+AuthType Basic
+AuthUserFile /var/www/AlbumMaker/.htpasswd
+AuthName "What's the middle name of your cat?"
+
+Require valid-user
+
+ErrorDocument 401 "<html><head>\
+<h1>Nope!</h1>\
+<h5>Probably need to ask the maintainer for the right pass, you ass!</h5>\
+</html>"
+
+ErrorDocument 402 "<html><head>\
+<h1>Nope!</h1>\
+<h5>Give me some money, you don(k)ey!</h5>\
+</html>"
+
+ErrorDocument 404 "<html><head>\
+<h1>Hi!</h1>\
+<h5>Now that you've gotten in it seems like you've gotten cocky and are now trying to poke around.\
+<br/>\
+<br/> Please don't do this foul thing sire,\
+<br/> My steel shall pierce and brand you liar,\
+<br/> And fire shall rain on next we meet,\
+<br/> So piss off now and go in peace.\
+<br/>\
+<br/> Sincerely,\
+<br/> not a poet.\
+</h5></html>"
+
+ErrorDocument 403 "<html><head>\
+<h1>Woah easy there!</h1>\
+<h5>You really dont need to be looking here, so go away!\
+<br/>\
+<br/>\
+</h5></html>"
