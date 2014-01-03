@@ -1,0 +1,7 @@
+# Place this file into (crontab -e) file
+
+# DynDNS update every 12 hours (1am 1pm)
+* 1,13 * * * sleep 37 ; wget -O - http://freedns.afraid.org/dynamic/update.php?V0liaFJGcktWVkpBd1o4YW9qZFE6MTA4NjU3MjI= >> /tmp/freedns_alist_crabdance_com.log 2>&1 &
+
+# Update AlbumMaker password every week
+* * * * 1 /var/www/AlbumMaker/private/passupd.sh /var/www/AlbumMaker/.htpasswd
