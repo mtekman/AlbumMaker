@@ -87,7 +87,7 @@ songlist=$out_fold/"songlist.txt"
 z_dec=$out_fold/"`echo $week_name\"_DECYPHERED\" | sed 's/\ /\_/g'`.zip"
 z_dec2=$out_fold/"`echo $week_name | sed 's/\ /\_/g'`.zip"
 
-rm -rf $z_dec $z_dec2 $songlist 2>/dev/null
+rm -rf $out_fold/*.zip $songlist 2>/dev/null
 
 cp $listfile $songlist
 

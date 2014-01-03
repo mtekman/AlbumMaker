@@ -143,10 +143,15 @@ function sendData(){
 		if (auth == "" || auth == empty || auth.length == 0){
 			box.value = empty;
 		}
+		else if (auth.split(' ').length > 1){
+			alert("No spaces please")
+			return false
+		}
+
+
 	}
 	if (table.rows.length <= 1) return false 
 
-	//return true
 	document.getElementById('json_name').value = writeList();
 	document.getElementById('json_name_youtube').value = writeYoutube();
 	return true
@@ -170,7 +175,7 @@ function writeList(){
 			   cel_vars[2].innerHTML;											//filename
 	}
 	str+='\n'
-	alert(str)
+//	alert(str)
 	return str
 }
 
