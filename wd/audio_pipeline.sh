@@ -12,7 +12,7 @@ listfile=$1
 mp3fold=$2
 out_fold=$3
 
-obs_fold="obfuscated"
+obs_fold="$out_fold/obfuscated"
 mkdir -p $obs_fold
 mkdir -p $out_fold
 
@@ -41,7 +41,6 @@ while read line; do
 		theme_author=`echo $line | awk -F ':' '{print $NF}' | sed -e 's/^ *//g' -e 's/ *$//g'`
 		continue
 	fi
-
 
 	# Song names
 	author=$(echo $line | awk '{print $1}' | sed -e 's/^ *//g' -e 's/ *$//g')
@@ -83,18 +82,20 @@ while read line; do
 
 done < $listfile
 
+#Remove old output files
 songlist=$out_fold/"songlist.txt"
+z_dec=$out_fold/"`echo $week_name\"_DECYPHERED\" | sed 's/\ /\_/g'`.zip"
+z_dec2=$out_fold/"`echo $week_name | sed 's/\ /\_/g'`.zip"
+
+rm -rf $z_dec $z_dec2 $songlist 2>/dev/null
+
 cp $listfile $songlist
 
 echo -e "\nMaking Real Zips"
-z_dec="`echo $week_name\"_DECYPHERED\" | sed 's/\ /\_/g'`.zip"
 zip -j $z_dec `find $mp3fold ! -name List.txt -type f` $songlist
-mv $z_dec $out_fold/ 2>&1
 
 echo -e "\nMaking Cypher Zips"
-z_dec2="`echo $week_name | sed 's/\ /\_/g'`.zip"
 zip -j $z_dec2 `find $obs_fold ! -name List.txt -type f`
-mv $z_dec2 $out_fold/ 2>&1
 
 cp $listfile $out_fold/"songlist.txt";
 
