@@ -9,3 +9,10 @@ Two albums are produced:
 
 
 This was originally developed for the folks over at http://www.alistchatforum.info hosting a Music Club, but it has since been retired.
+
+### Features ###
+
+ * Drag and drop media
+ * Input parsing
+ * Audio pipeline
+ * Run configurations for reuse
