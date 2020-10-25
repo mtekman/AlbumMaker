@@ -1,3 +1,6 @@
+### This repo has migrated to GitLab https://gitlab.com/mtekman/AlbumMaker
+###### [It only exists here for archiving purposes]
+
 # AlbumMaker #
 
 A small web server for generating an album on the fly from a variety of sources (audio files, youtube links) with album art. 
